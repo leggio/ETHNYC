@@ -1,0 +1,20 @@
+Royalty Flow:
+
+- Existing open source libraries can serve as top level NFTs. Developer will mint a top level at no cost.
+- Projects that want to use the dependencies of a top level NFT will mint their NFT as a child of the parent.
+- We maintain a tree of projects and dependencies
+- When someone purchases software we take the sale amount and distribute it up the dependency tree to any dependencies that the project used
+- top level NFTs will have a price value defaulted to 0 (so we can re-use the same struct)
+- child NFTs will have a price value which is how much the project wants to sell it’s software for
+
+Royalty split:
+Sold software: 90%
+All Dependencies: Share the remaining 10%
+DAO: The leftover I guess?
+
+Functions needed:
+- getAllTopLevelSoftware -> gets all of the top level NFTs
+- distribute -> iterates up the tree starting from child NFT that made a sale and sends appropriate amount to each parent. distribute will happen live at sale time
+so funds don't get stored in contract. This means parents don't have to click a button to claim funds. Most likely will want to emit sale/distribute
+events from the contract so we can have an activity feed for the user. i.e let them know where the money they receive is coming from (would be cool)
+^^^^ might be able to just create an "event" struct and store them in a mapping by parent NFT id
