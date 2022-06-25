@@ -30,7 +30,7 @@ contract Royalty is ERC721URIStorage, Ownable {
 
   struct Software {
     string id;
-    uint256 parent;
+    string parent;
     uint256 level;
     uint256 children;
     uint256 price;
@@ -55,7 +55,6 @@ contract Royalty is ERC721URIStorage, Ownable {
     view
     returns (uint256[] memory)
   {
-    console.log("getting children for %s", targetId);
     bool[] memory ids = new bool[](allSoftware.length);
     uint256 trueCount = 0;
     for (uint256 i = 0; i < allSoftware.length; i++) {
@@ -86,7 +85,7 @@ contract Royalty is ERC721URIStorage, Ownable {
     returns (
       address,
       string memory,
-      uint256,
+      string memory,
       uint256,
       uint256,
       uint256,
@@ -115,13 +114,11 @@ contract Royalty is ERC721URIStorage, Ownable {
   {
     Software memory newSoftware = Software(
       Strings.toString(_topLevels.current()),
-      0,
+      Strings.toString(0),
       1,
       0,
       0
     );
-
-    console.log('Minting new parent NFT');
 
     software[softwareCount] = newSoftware;
     softwareCount += 1;
@@ -145,8 +142,6 @@ contract Royalty is ERC721URIStorage, Ownable {
   {
     require(price > 0, "price must be > 0");
 
-    console.log('Minting new child NFT');
-
     Software memory parentSoftware = software[parent];
     string memory parentId = parentSoftware.id;
 
@@ -156,7 +151,7 @@ contract Royalty is ERC721URIStorage, Ownable {
 
     Software memory newSoftware = Software(
       newSoftwareId,
-      parent,
+      Strings.toString(parent),
       softwareCount + 1,
       0,
       price
@@ -206,29 +201,21 @@ contract Royalty is ERC721URIStorage, Ownable {
     return id;
   }
 
-  function distribute(uint256 id, uint256 price) public payable returns (uint256) {
-    // get NFT object
-    // get parent of NFT
-    // loop until no more parents
-    // store all parent ids
-    // get owner of each parent
-    // send % to parent
+  // function distribute(uint256 id, uint256 price) public payable returns (string[] memory) {
+  //   Software memory child = software[id];
+  //   string[] memory parents = new string[](child.level - 1);
 
-    Software memory child = software[id];
-    console.log(child.parent);
-    uint256[] memory parents = new uint256[](child.level + 1);
+  //   parents[0] = child.parent;
 
-    parents[0] = child.parent;
+  //   for (uint256 i = 1; i <= child.level - 2; i++) {
+  //     string memory currentParent = parents[i-1];
+  //     Software memory current = software[currentParent];
+  //     // console.log(current.parent);
+  //     // parents[i] = current.parent;
+  //   }
 
-    for (uint256 i = 1; i <= child.level; i++) {
-      uint256 currentParrent = parents[i-1];
-      Software memory current = software[currentParrent];
-      console.log(current.parent);
-      parents[i] = current.parent;
-    }
-
-    return id;
-  }
+  //   return parents;
+  // }
 
 
   /*
