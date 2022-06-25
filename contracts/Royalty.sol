@@ -29,10 +29,10 @@ contract Royalty is ERC721URIStorage, Ownable {
   address _daoAddress;
 
   struct Software {
-    string id;
-    string parent;
+    uint256 id;
+    uint256 parent;
     uint256 level;
-    uint256 children;
+    uint256[10] children;
     uint256 price;
   }
 
@@ -50,33 +50,14 @@ contract Royalty is ERC721URIStorage, Ownable {
   // probably better than iterating through every id and checking the level to see if
   // it's a parent software...
 
-  function getChildren(string memory targetId)
+  function getChildren(uint256 targetId)
     public
     view
-    returns (uint256[] memory)
+    returns (uint256[10] memory)
   {
-    bool[] memory ids = new bool[](allSoftware.length);
-    uint256 trueCount = 0;
-    for (uint256 i = 0; i < allSoftware.length; i++) {
-        string memory id = software[allSoftware[i]].id;
-        if (startsWith(toSlice(id), toSlice(targetId))) {
-            ids[i] = true;
-            trueCount++;
-        } else {
-            ids[i] = false;
-        }
-    }
+    Software memory targetSoftware = software[targetId];
 
-    uint256[] memory childrenIds = new uint256[](trueCount);
-    uint256 trackTrue = 0;
-    for (uint256 i = 0; i < ids.length; i++) {
-        if (ids[i] == true) {
-            childrenIds[trackTrue] = i;
-            trackTrue++;
-        }
-    }
-
-    return childrenIds;
+    return targetSoftware.children;
   }
 
   function getSoftwareDetails(uint256 id)
@@ -84,10 +65,10 @@ contract Royalty is ERC721URIStorage, Ownable {
     view
     returns (
       address,
-      string memory,
-      string memory,
       uint256,
       uint256,
+      uint256,
+      uint256[10] memory,
       uint256,
       string memory
     )
@@ -98,7 +79,7 @@ contract Royalty is ERC721URIStorage, Ownable {
 
     return (
       owner,
-      Strings.toString(id),
+      id,
       targetSoftware.parent,
       targetSoftware.level,
       targetSoftware.children,
@@ -112,18 +93,30 @@ contract Royalty is ERC721URIStorage, Ownable {
     payable
     returns (uint256)
   {
+    uint256[10] memory children = [
+      uint256(99),
+      uint256(99),
+      uint256(99),
+      uint256(99),
+      uint256(99),
+      uint256(99),
+      uint256(99),
+      uint256(99),
+      uint256(99),
+      uint256(99)
+    ];
+    uint256 newItemId = _softwareIds.current();
     Software memory newSoftware = Software(
-      Strings.toString(_topLevels.current()),
-      Strings.toString(0),
+      newItemId,
+      uint256(999),
       1,
-      0,
+      children,
       0
     );
 
     software[softwareCount] = newSoftware;
     softwareCount += 1;
 
-    uint256 newItemId = _softwareIds.current();
     _mint(recipient, newItemId);
     _setTokenURI(newItemId, tokenURI);
 
@@ -142,18 +135,29 @@ contract Royalty is ERC721URIStorage, Ownable {
   {
     require(price > 0, "price must be > 0");
 
-    Software memory parentSoftware = software[parent];
-    string memory parentId = parentSoftware.id;
+    Software storage parentSoftware = software[parent];
+    uint256 parentId = parentSoftware.id;
 
-    string memory children = Strings.toString(parentSoftware.children);
+    uint256[10] memory children = [
+      uint256(99),
+      uint256(99),
+      uint256(99),
+      uint256(99),
+      uint256(99),
+      uint256(99),
+      uint256(99),
+      uint256(99),
+      uint256(99),
+      uint256(99)
+    ];
 
-    string memory newSoftwareId = string(bytes.concat(bytes(parentId), bytes(children)));
+    uint256 newSoftwareId = _softwareIds.current();
 
     Software memory newSoftware = Software(
       newSoftwareId,
-      Strings.toString(parent),
-      softwareCount + 1,
-      0,
+      parentId,
+      parentSoftware.level + 1,
+      children,
       price
     );
     
@@ -162,7 +166,13 @@ contract Royalty is ERC721URIStorage, Ownable {
     _mint(recipient, newItemId);
     _setTokenURI(newItemId, tokenURI);
 
-    parentSoftware.children += 1;
+    for (uint256 i = 0; i < parentSoftware.children.length; i++) {
+      if (parentSoftware.children[i] == uint256(99)) {
+        parentSoftware.children[i] = newItemId;
+        break;
+      }
+    }
+
     softwareCount += 1;
 
     allSoftware.push(newItemId);
@@ -179,43 +189,41 @@ contract Royalty is ERC721URIStorage, Ownable {
       "Insufficient price for software"
     );
 
-    address owner = ERC721.ownerOf(id);
-
-    (bool success, ) = owner.call{value: msg.value}("");
-
-    // TODO: Don't send full msg.value to owner of software
-    // here is where we will call the distribute function to traverse
-    // up the parents and calculate how much is reserved for each parent
-    // then we send the remaining to the id given here
-
-    // distribute function thoughts:
-    // two ways to do this...
-    // 1: keep eth in contract and require distribute function to be called by a user for their software
-    // ^^^ this would run the calculation adhoc for the software and distribute to all other software in the tree (naive approach)
-    // 2: call distribute automagically at the time of sale and do the distributions
-    // ^^^ this would probably require us to emit distribute events (like a psuedo event struct... not a solidity event)
-    // so that we can display each of the distribute amounts to the parent software owner
-
-    require(success, "Transaction failed");
+    distribute(id, msg.value);
 
     return id;
   }
 
-  // function distribute(uint256 id, uint256 price) public payable returns (string[] memory) {
-  //   Software memory child = software[id];
-  //   string[] memory parents = new string[](child.level - 1);
+  function distribute(uint256 id, uint256 price) public payable returns (uint256[] memory) {
+    address softwareOwner = ERC721.ownerOf(id);
+    Software memory child = software[id];
+    uint256[] memory parents = new uint256[](child.level - 1);
+    Software memory parent = software[child.parent];
 
-  //   parents[0] = child.parent;
+    parents[0] = parent.id;
+    
+    for (uint256 i = 1; i <= child.level - 2; i++) {
+      Software memory currentParent = software[i-1];
+      parents[i] = currentParent.id;
+    }
 
-  //   for (uint256 i = 1; i <= child.level - 2; i++) {
-  //     string memory currentParent = parents[i-1];
-  //     Software memory current = software[currentParent];
-  //     // console.log(current.parent);
-  //     // parents[i] = current.parent;
-  //   }
+    uint256 forUser = price / 100 * 95;
+    uint256 royalties = price / 100 * 5;
+    uint256 singleRoyalty = royalties / parents.length;
+    
+    for (uint256 i = 0; i < parents.length; i++) {
+      address owner = ERC721.ownerOf(parents[i]);
+      (bool successRoyalty, ) = owner.call{value: singleRoyalty}("");
+      console.log("Sending to %s", owner);
+      require(successRoyalty, "Transaction failed");
+    }
 
-  //   return parents;
-  // }
+    (bool success, ) = softwareOwner.call{value: forUser}("");
+    require(success, "Transaction failed");
+    console.log("Sending to %s", softwareOwner);
+
+    return parents;
+  }
 
 
   /*

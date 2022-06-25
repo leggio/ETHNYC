@@ -56,12 +56,11 @@ describe("test royalty", function () {
     await royalty.mintSoftware(owner.address, 0, 100, 'www.child1.com');
     await royalty.mintSoftware(owner.address, 0, 200, 'www.child2.com');
 
-    const children = await royalty.getChildren('0');
+    const children = await royalty.getChildren(0);
 
-    expect(children[1].toString()).to.equal('1');
-    expect(children[2].toString()).to.equal('2');
+    expect(children[0].toString()).to.equal('1');
+    expect(children[1].toString()).to.equal('2');
   });
-
   it("should allow a user to purchase a child software", async function () {
     const [owner] = await ethers.getSigners();
     const Royalty = await ethers.getContractFactory("Royalty");
@@ -70,21 +69,10 @@ describe("test royalty", function () {
 
     await royalty.mintTopLevelSoftware(owner.address, 'www.parent1.com');
     await royalty.mintSoftware(owner.address, 0, 100, 'www.child1.com');
+    await royalty.mintSoftware(owner.address, 1, 100, 'www.child2.com');
+    await royalty.mintSoftware(owner.address, 2, 100, 'www.child3.com');
 
-    await royalty.purchase(1, { value: 100 });
+    await royalty.purchase(3, { value: 100 });
 
   });
-  // it("should get all parents for distribute function", async function () {
-  //   const [owner] = await ethers.getSigners();
-  //   const Royalty = await ethers.getContractFactory("Royalty");
-  //   const royalty = await Royalty.deploy();
-  //   await royalty.deployed();
-
-  //   await royalty.mintTopLevelSoftware(owner.address, 'www.parent1.com');
-  //   await royalty.mintSoftware(owner.address, 0, 100, 'www.child1.com');
-  //   await royalty.mintSoftware(owner.address, 1, 100, 'www.child2.com');
-
-  //   const foo = await royalty.distribute(2, 100);
-
-  // });
 });
