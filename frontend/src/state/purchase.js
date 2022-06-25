@@ -1,10 +1,10 @@
-export const mintTopLevelSoftware = ({
+export const purchase = ({
   royaltyContractInstance,
   id,
   amount,
   address
 }) => {
-  royaltyContractInstance.methods.purchase(id).send(
+  royaltyContractInstance.methods.purchase(parseInt(id)).send(
     {
       from: address,
       value: amount
