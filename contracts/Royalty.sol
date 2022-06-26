@@ -16,11 +16,6 @@ contract Royalty is ERC721URIStorage, Ownable {
   Counters.Counter private _softwareIds;
   Counters.Counter private _topLevels;
 
-  struct slice {
-    uint256 _len;
-    uint256 _ptr;
-  }
-
   uint256[] allSoftware;
   uint256[] allEvents;
 
@@ -229,52 +224,5 @@ contract Royalty is ERC721URIStorage, Ownable {
 
     return parents;
   }
-
-
-  /*
-    * @dev Returns a slice containing the entire string.
-    * @param self The string to make a slice from.
-    * @return A newly allocated slice containing the entire string.
-    */
-  function toSlice(string memory self) internal pure returns (slice memory) {
-      uint256 ptr;
-      assembly {
-          ptr := add(self, 0x20)
-      }
-      return slice(bytes(self).length, ptr);
-  }
-
-  /*
-    * @dev Returns true if `self` starts with `needle`.
-    * @param self The slice to operate on.
-    * @param needle The slice to search for.
-    * @return True if the slice starts with the provided text, false otherwise.
-    */
-  function startsWith(slice memory self, slice memory needle)
-      internal
-      pure
-      returns (bool)
-  {
-      if (self._len < needle._len) {
-          return false;
-      }
-
-      if (self._ptr == needle._ptr) {
-          return true;
-      }
-
-      bool equal;
-      assembly {
-          let length := mload(needle)
-          let selfptr := mload(add(self, 0x20))
-          let needleptr := mload(add(needle, 0x20))
-          equal := eq(
-              keccak256(selfptr, length),
-              keccak256(needleptr, length)
-          )
-      }
-      return equal;
-  }
-
 
 }
