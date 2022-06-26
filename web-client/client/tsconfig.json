@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./src",
+    "target": "es6",
+    "outDir": "./dist",
+    "esModuleInterop": true,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "jsx": "react",
+    "sourceMap": true,
+    "strict": true,
+    "lib": ["dom", "dom.iterable", "es6"]
+  },
+  "exclude": ["node_modules"]
+}
