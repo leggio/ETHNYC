@@ -55,7 +55,7 @@ const MenuBar = () => (
       <NavLink to="/">Home</NavLink>
     </MenuItem>
     <MenuItem onClick={dismiss}>
-      <NavLink to="/about">Create</NavLink>
+      <NavLink to="/create">Create</NavLink>
     </MenuItem>
   </Menu>
 );

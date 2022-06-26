@@ -7,6 +7,7 @@ import addresses from "./../contract_data/dev.json";
 
 import Gallery from '../pages/Gallery';
 import Detail from '../pages/Detail';
+import Create from '../pages/Create';
 
 import Navigation from '../components/Navigation';
 import NotFound from '../pages/NotFound';
@@ -47,6 +48,7 @@ export default () => {
       <Navigation />
       <Routes>
         <Route path="/" element={<Gallery />} />
+        <Route path="/create" element={<Create />} />
         <Route path="/software/:id" element={<Detail />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
