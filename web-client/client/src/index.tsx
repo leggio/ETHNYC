@@ -1,20 +1,15 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import { ThemeProvider } from 'styled-components';
-
+import { createRoot } from 'react-dom/client';
 import mainTheme from './themes/main';
 import GlobalStyle from './themes/global/GlobalStyles';
+import App from './app/App';
 
-const render = () => {
-  const App = require('./app/App').default;
-
-  ReactDOM.render(
-    <ThemeProvider theme={mainTheme}>
-      <GlobalStyle />
-      <App />
-    </ThemeProvider>,
-    document.querySelector('#root') as HTMLBRElement
-  );
-};
-
-render();
+// const App = require('./app/App').default;
+const container = document.querySelector('#root') as HTMLBRElement;
+const root = createRoot(container!); // createRoot(container!) if you use TypeScript
+root.render(
+<ThemeProvider theme={mainTheme}>
+  <GlobalStyle />
+  <App />
+</ThemeProvider>);
