@@ -5,11 +5,7 @@ This project demonstrates a basic Hardhat use case. It comes with a sample contr
 Try running some of the following tasks:
 
 ```shell
-npx hardhat accounts
-npx hardhat compile
-npx hardhat clean
-npx hardhat test
-npx hardhat node
-node scripts/sample-script.js
-npx hardhat help
+npx hardhat node --> run chain locally
+npx hardhat test --> run solidity tests
+npx hardhat run --network localhost scripts/deploy.js --> deploy contract to local chain (do this in a second terminal while npx hardhat node is still running)
 ```
