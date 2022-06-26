@@ -18,7 +18,7 @@ export default () => {
   // ts-ignore
   const [royaltyContract, setRoyaltyContract] = useState(undefined);
   const [web3, setWeb3] = useState(undefined);
-  const [address, setAddress] = useState("");
+  const [address, setAddress] = useState<String|undefined>(undefined);
 
   useEffect(() => {
     ethereum.request({ method: "eth_requestAccounts" });
@@ -36,15 +36,12 @@ export default () => {
       const accounts = await ethereum.request({
         method: "eth_requestAccounts",
       });
-      console.log(accounts);
       const account = accounts[0];
-      setAddress(account[0]);
-      console.log("=============== address: " + address)
+      setAddress(account);
     }
 
     fetchAddress();
-  }, []);
-
+  }, [address]);
   return (
     <BrowserRouter>
       <Navigation />
