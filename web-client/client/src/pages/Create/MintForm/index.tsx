@@ -1,40 +1,41 @@
 import React from 'react';
 import { Formik, Form, ErrorMessage, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
-import { useNavigate, useLocation } from 'react-router-dom';
-// import { Timestamp } from 'google-protobuf/google/protobuf/timestamp_pb';
-// import { v4 as uuidv4 } from 'uuid';
+import { mintTopLevelSoftware } from './../../../state/mintTopLevelSoftware';
 
 import { StyledField, Error, Label } from './Formik';
 import { Button } from './Button';
 
 interface Values {
   name: string;
-  imageUrl: string;
+  imageurl: string;
+}
+
+interface Props {
+  address: string;
+  royaltyContractInstance: any;
 }
 
 const initialValues: Values = {
   name: '',
-  imageUrl: ''
+  imageurl: ''
 };
 
 const validationSchema = Yup.object({
   name: Yup.string().required('please enter your project name'),
-  imageUrl: Yup.string().required('please enter your image url')
+  imageurl: Yup.string().required('please enter your image url')
 });
 
-export default () => {
-  const navigate = useNavigate();
-  const location = useLocation();
+export default ({address, royaltyContractInstance}: Props) => {
   const onSubmit = async (values: Values, actions: FormikHelpers<Values>) => {
     const { setSubmitting, resetForm, setStatus } = actions;
     try {
-      // const token = 'daf';
-      // const authInterceptor = new AuthInterceptor(token);
-      // const options = {
-      //   unaryInterceptors: [authInterceptor]
-      // };
-      // const service = new GrpcServicePromiseClient(host, null, options);
+      mintTopLevelSoftware({
+        royaltyContractInstance: royaltyContractInstance,
+        address: address,
+        uri: values.imageurl,
+        name: values.name
+      })
     } catch (err) {
       // LOG setStatus({ message: `${err.name}: ${err.message}` })
       setStatus({ message: 'Something went wrong, please try again later' });
@@ -59,14 +60,14 @@ export default () => {
             placeholder="project name"
           />
           <ErrorMessage name="name" component={Error} />
-          <Label htmlFor="image">Enter Image URL</Label>
+          <Label htmlFor="imageurl">Enter Image URL</Label>
           <StyledField
             type="text"
-            id="image"
-            name="image"
+            id="imageurl"
+            name="imageurl"
             placeholder="image url"
           />
-          <ErrorMessage name="image" component={Error} />
+          <ErrorMessage name="imageurl" component={Error} />
           {status && status.message && <Error>{status.message}</Error>}
           <Button type="submit" disabled={!isValid || isSubmitting}>
             Mint

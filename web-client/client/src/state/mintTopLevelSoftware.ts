@@ -3,12 +3,12 @@ export const mintTopLevelSoftware = ({
   address,
   uri,
   name
-}) => {
+}: any) => {
   royaltyContractInstance.methods.mintTopLevelSoftware(address, uri, name).send(
     {
       from: address,
     },
-    (err, res) => {
+    (err: any, res: any) => {
       if (!err) {
         console.log("woo!");
       } else {

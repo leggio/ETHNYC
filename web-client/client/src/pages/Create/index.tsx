@@ -15,8 +15,12 @@ const H1 = styled.h1`
   margin: 0.65em 0;
   border-bottom: 1px solid ${({ theme }) => theme.colors.primaryDark};
 `;
+interface Props {
+  address: string;
+  royaltyContractInstance: any;
+}
 
-const Create: React.FC = () => {
+const Create: React.FC<Props> = ({address, royaltyContractInstance}) => {
   return (
     <Background>
       <Grid>
@@ -27,7 +31,7 @@ const Create: React.FC = () => {
         </TitleArea>
         <TextArea>
           <Container width="90%">
-            <MintForm />
+            <MintForm address={address} royaltyContractInstance={royaltyContractInstance}/>
           </Container>
         </TextArea>
       </Grid>

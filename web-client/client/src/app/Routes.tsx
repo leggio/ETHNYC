@@ -19,7 +19,7 @@ export default () => {
   // ts-ignore
   const [royaltyContract, setRoyaltyContract] = useState(undefined);
   const [web3, setWeb3] = useState(undefined);
-  const [address, setAddress] = useState<String|undefined>(undefined);
+  const [address, setAddress] = useState<string>("");
 
   useEffect(() => {
     ethereum.request({ method: "eth_requestAccounts" });
@@ -41,14 +41,22 @@ export default () => {
       setAddress(account);
     }
 
+    console.log(address);
+
     fetchAddress();
   }, [address]);
+
+
+  console.log("==========");
+  console.log(address);
+  console.log(royaltyContract);
+
   return (
     <BrowserRouter>
       <Navigation />
       <Routes>
-        <Route path="/" element={<Gallery />} />
-        <Route path="/create" element={<Create />} />
+        <Route path="/" element={<Gallery address={address} royaltyContractInstance={royaltyContract}/>} />
+        <Route path="/create" element={<Create address={address} royaltyContractInstance={royaltyContract}/>} />
         <Route path="/software/:id" element={<Detail />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
