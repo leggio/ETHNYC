@@ -34,6 +34,7 @@ contract Royalty is ERC721URIStorage, Ownable {
     uint256 level;
     uint256[10] children;
     uint256 price;
+    string name;
   }
 
   mapping(uint256 => Software) software;
@@ -70,6 +71,7 @@ contract Royalty is ERC721URIStorage, Ownable {
       uint256,
       uint256[10] memory,
       uint256,
+      string memory,
       string memory
     )
   {
@@ -84,11 +86,12 @@ contract Royalty is ERC721URIStorage, Ownable {
       targetSoftware.level,
       targetSoftware.children,
       targetSoftware.price,
-      uri
+      uri,
+      targetSoftware.name
     );
   }
 
-  function mintTopLevelSoftware(address recipient, string memory tokenURI)
+  function mintTopLevelSoftware(address recipient, string memory tokenURI, string memory name)
     public
     payable
     returns (uint256)
@@ -111,7 +114,8 @@ contract Royalty is ERC721URIStorage, Ownable {
       uint256(999),
       1,
       children,
-      0
+      0,
+      name
     );
 
     software[softwareCount] = newSoftware;
@@ -128,7 +132,7 @@ contract Royalty is ERC721URIStorage, Ownable {
     return newItemId;
   }
 
-  function mintSoftware(address recipient, uint256 parent, uint256 price, string memory tokenURI)
+  function mintSoftware(address recipient, uint256 parent, uint256 price, string memory tokenURI, string memory name)
     public
     payable
     returns (uint256)
@@ -158,7 +162,8 @@ contract Royalty is ERC721URIStorage, Ownable {
       parentId,
       parentSoftware.level + 1,
       children,
-      price
+      price,
+      name
     );
     
     software[softwareCount] = newSoftware;

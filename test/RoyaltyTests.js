@@ -27,7 +27,7 @@ describe("test royalty", function () {
     const initialCount = await royalty.getAllSoftware();
     expect(initialCount).to.equal(0);
     
-    await royalty.mintTopLevelSoftware(owner.address, 'www.google.com');
+    await royalty.mintTopLevelSoftware(owner.address, 'www.google.com', 'parent');
     const currentCount = await royalty.getAllSoftware();
     expect(currentCount).to.equal(1);
   });
@@ -38,8 +38,8 @@ describe("test royalty", function () {
     const royalty = await Royalty.deploy();
     await royalty.deployed();
 
-    await royalty.mintTopLevelSoftware(owner.address, 'www.parent.com');
-    await royalty.mintSoftware(owner.address, 0, 100, 'www.child.com');
+    await royalty.mintTopLevelSoftware(owner.address, 'www.parent.com', 'parent');
+    await royalty.mintSoftware(owner.address, 0, 100, 'www.child.com', 'child');
 
     const details = await royalty.getSoftwareDetails(1);
     expect(details[6]).to.equal('www.child.com');
@@ -52,9 +52,9 @@ describe("test royalty", function () {
     const royalty = await Royalty.deploy();
     await royalty.deployed();
 
-    await royalty.mintTopLevelSoftware(owner.address, 'www.parent1.com');
-    await royalty.mintSoftware(owner.address, 0, 100, 'www.child1.com');
-    await royalty.mintSoftware(owner.address, 0, 200, 'www.child2.com');
+    await royalty.mintTopLevelSoftware(owner.address, 'www.parent1.com', 'parent');
+    await royalty.mintSoftware(owner.address, 0, 100, 'www.child1.com', 'child1');
+    await royalty.mintSoftware(owner.address, 0, 200, 'www.child2.com', 'child2');
 
     const children = await royalty.getChildren(0);
 
@@ -67,10 +67,10 @@ describe("test royalty", function () {
     const royalty = await Royalty.deploy();
     await royalty.deployed();
 
-    await royalty.mintTopLevelSoftware(owner.address, 'www.parent1.com');
-    await royalty.mintSoftware(owner.address, 0, 100, 'www.child1.com');
-    await royalty.mintSoftware(owner.address, 1, 100, 'www.child2.com');
-    await royalty.mintSoftware(owner.address, 2, 100, 'www.child3.com');
+    await royalty.mintTopLevelSoftware(owner.address, 'www.parent1.com', 'parent');
+    await royalty.mintSoftware(owner.address, 0, 100, 'www.child1.com', 'child1');
+    await royalty.mintSoftware(owner.address, 1, 100, 'www.child2.com', 'child2');
+    await royalty.mintSoftware(owner.address, 2, 100, 'www.child3.com', 'child3');
 
     await royalty.purchase(3, { value: 100 });
 

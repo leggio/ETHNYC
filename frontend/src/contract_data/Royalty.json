@@ -254,6 +254,11 @@
         "internalType": "string",
         "name": "",
         "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
       }
     ],
     "stateMutability": "view",
@@ -304,6 +309,11 @@
         "internalType": "string",
         "name": "tokenURI",
         "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
       }
     ],
     "name": "mintSoftware",
@@ -327,6 +337,11 @@
       {
         "internalType": "string",
         "name": "tokenURI",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "name",
         "type": "string"
       }
     ],

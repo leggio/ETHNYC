@@ -17,7 +17,8 @@ export const getAllSoftware = ({ royaltyContractInstance, address }) => {
                   parent: res[2],
                   children: res[3],
                   price: res[4],
-                  uri: res[5]
+                  uri: res[5],
+                  name: res[6]
                 })
               } else {
                 console.log(err)

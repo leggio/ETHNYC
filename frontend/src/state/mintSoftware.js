@@ -4,9 +4,10 @@ export const mintSoftware = ({
   uri,
   parent,
   price,
+  name
 }) => {
   royaltyContractInstance.methods
-    .mintSoftware(address, parent, price, uri)
+    .mintSoftware(address, parent, price, uri, name)
     .send(
       {
         from: address,

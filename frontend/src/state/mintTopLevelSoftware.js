@@ -2,8 +2,9 @@ export const mintTopLevelSoftware = ({
   royaltyContractInstance,
   address,
   uri,
+  name
 }) => {
-  royaltyContractInstance.methods.mintTopLevelSoftware(address, uri).send(
+  royaltyContractInstance.methods.mintTopLevelSoftware(address, uri, name).send(
     {
       from: address,
     },
